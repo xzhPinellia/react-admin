@@ -22,7 +22,7 @@ class LoginForm extends Component{
         }).catch(error=>{
 
         })
-        console.log('Received values of form: ', values);
+        console.log('1', values);
     };
     //获取验证码
     getCode =() =>{
