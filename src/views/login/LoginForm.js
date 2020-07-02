@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from "react";
+import {withRouter} from 'react-router-dom'
 // ANTD
 import { Form, Input, Button, Row, Col } from 'antd';
 import { UserOutlined, UnlockOutlined } from '@ant-design/icons';
@@ -8,29 +9,60 @@ import {validate_password,validate_email} from '../../utils/validate'
 import {Login} from '../../api/account'
 // 组件
 import Code from '../../components/code/index'
+//加密
+import CryptoJs from 'crypto-js'
 class LoginForm extends Component{
     constructor(){
         super();
         this.state = {
             username:'',
-            module:"login"
+            password:"",
+            code:"",
+            module:"login",
+            loading:false,
         };
     }
     //提交表单
     onFinish = (values) => {
-        Login().then(response=>{
-            console.log(response)
-        }).catch(error=>{
-
+        const requestData={
+            username:this.state.username,
+            password:CryptoJs.MD5(this.state.password).toString(),
+            code:this.state.code,
+        }
+        this.setState({
+            loading:true
         })
-        console.log('1', values);
+        Login(requestData).then(response=>{
+            console.log(response)
+            this.setState({
+                loading:false
+            })
+            //路由跳转
+            this.props.history.push('/index')
+        }).catch(error=>{
+            this.setState({
+                loading:false
+            })
+        })
     };
    
     //input 输入值
-    inputChange=(e)=>{
+    inputChangeUsername=(e)=>{
         let value=e.target.value;
         this.setState({
             username:value
+        })
+    }
+    inputChangePassword=(e)=>{
+        let value=e.target.value;
+        this.setState({
+            password:value
+        })
+    }
+     inputChangeCode=(e)=>{
+        let value=e.target.value;
+        this.setState({
+            code:value
         })
     }
     toggleForm = () => {
@@ -39,7 +71,7 @@ class LoginForm extends Component{
     }
 
     render(){
-        const {username,module} =this.state;
+        const {username,module,loading} =this.state;
         const _this= this;
         return (
             <Fragment>
@@ -71,7 +103,7 @@ class LoginForm extends Component{
                                   }),
                             ]
                         } >
-                            <Input value={username} onChange={this.inputChange} prefix={<UserOutlined className="site-form-item-icon" />} placeholder="email" />
+                            <Input value={username} onChange={this.inputChangeUsername} prefix={<UserOutlined className="site-form-item-icon" />} placeholder="email" />
                         </Form.Item>
                         <Form.Item name="password" rules={
                             [
@@ -80,7 +112,7 @@ class LoginForm extends Component{
                                 {pattern: validate_password ,message:'请输入大于6位小于20位数字+字母'}
                             ]
                         } >
-                            <Input prefix={<UnlockOutlined className="site-form-item-icon" />} placeholder="Password" />
+                            <Input prefix={<UnlockOutlined  className="site-form-item-icon" />} onChange={this.inputChangePassword} placeholder="Password" />
                         </Form.Item>
                         <Form.Item name="code" rules={
                             [
@@ -90,7 +122,7 @@ class LoginForm extends Component{
                         } >
                             <Row gutter={13}>
                                 <Col span={15}>
-                                    <Input prefix={<UnlockOutlined className="site-form-item-icon" />} placeholder="Code" />
+                                    <Input prefix={<UnlockOutlined className="site-form-item-icon" />} onChange={this.inputChangeCode} placeholder="Code" />
                                 </Col>
                                 <Col span={9}>
                                     <Code username={username} module={module}/>
@@ -98,7 +130,7 @@ class LoginForm extends Component{
                             </Row>
                         </Form.Item>
                         <Form.Item>
-                            <Button type="primary" htmlType="submit" className="login-form-button" block> 登录 </Button>
+                            <Button type="primary" loading={loading} htmlType="submit" className="login-form-button" block>登录 </Button>
                         </Form.Item>
                     </Form>
                 </div>
@@ -107,4 +139,4 @@ class LoginForm extends Component{
     }
 }
 
-export default LoginForm;
+export default withRouter(LoginForm);

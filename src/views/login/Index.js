@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import "./index.scss";
 // 组件
 import LoginForm from "./LoginForm";
-import RetisterForm from "./RegisterForm";
+import RegisterForm from "./RegisterForm";
 class Login extends Component{
     constructor(){
         super();
@@ -25,7 +25,7 @@ class Login extends Component{
                     {
                     this.state.formType === 'login' 
                     ? <LoginForm switchForm={this.switchForm}></LoginForm> 
-                    : <RetisterForm switchForm={this.switchForm}></RetisterForm>
+                    : <RegisterForm switchForm={this.switchForm}></RegisterForm>
                     }
                 </div>
             </div>

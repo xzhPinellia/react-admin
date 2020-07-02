@@ -21,19 +21,16 @@ class RegisterForm extends Component{
         };
     }
     onFinish = (values) => {
+        console.log('1', values);
         const requestData={
             username:this.state.username,
             password:CryptoJs.MD5(this.state.password).toString(),
             code:this.state.code,
         }
-        console.log(requestData)
         //调用注册
         Register(requestData).then(response=>{
             const data=response.data
-            message.success(data.message);
-            if(data.resCode===0){
-                this.toogleForm();
-            }
+            message.success(data.message)
         }).catch(error=>{
 
         })
@@ -57,7 +54,6 @@ class RegisterForm extends Component{
             code:value
         })
     }
-    //登录注册切换
     toogleForm = () => {
         // 调父级的方法
         this.props.switchForm("login");
@@ -93,7 +89,7 @@ class RegisterForm extends Component{
                                     }if(passwords_value && value !==passwords_value){
                                         return Promise.reject('两次密码不一致!');
                                     }
-                                  return Promise.resolve();
+                                  return Promise.resolve;
                                 },
                               }),
                             ]} >
@@ -106,7 +102,7 @@ class RegisterForm extends Component{
                                     if(value!==getFieldValue("password")){
                                         return Promise.reject('两次密码不一致!');
                                     }
-                                  return Promise.resolve();
+                                  return Promise.resolve;
                                 },
                               }),
                             ]} >
